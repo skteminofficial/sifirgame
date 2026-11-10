@@ -210,14 +210,15 @@ let cloudOnline=false,cloudUrl=SCC_API_URL,cloudRole='viewer',cloudPin='',cloudC
 const cloudStatus=t=>{$('#cloudStatus').textContent=t};
 function cloudRequest(payload){return new Promise((resolve,reject)=>{
  if(!cloudUrl)return reject(Error('URL API belum diisi'));
- let requestId='scc'+Date.now()+'_'+(++cloudCounter),frame=document.createElement('iframe');frame.name=requestId;frame.style.display='none';document.body.appendChild(frame);
+ let requestId='scc_'+crypto.randomUUID().replace(/-/g,''),frame=document.createElement('iframe');frame.name=requestId;frame.style.display='none';document.body.appendChild(frame);
  let form=document.createElement('form');form.method='POST';form.action=cloudUrl;form.target=requestId;form.style.display='none';
  const add=(k,v)=>{let input=document.createElement('input');input.name=k;input.value=v;form.appendChild(input)};
  add('requestId',requestId);add('payload',JSON.stringify({...payload,role:cloudRole,pin:cloudPin}));document.body.appendChild(form);
  let done=false;const finish=(err,result)=>{if(done)return;done=true;window.removeEventListener('message',handler);clearTimeout(timeout);form.remove();frame.remove();err?reject(err):resolve(result)};
  const handler=e=>{if(!e.data||e.data.type!=='SCC_V91_REPLY'||e.data.requestId!==requestId)return;
- // Response is checked by a per-request unpredictable frame identity, and only trusted Google Apps Script hosts.
- if(!/^https:\/\/([a-z0-9-]+\.)*(googleusercontent\.com|google\.com)$/.test(e.origin))return;
+ // Apps Script HtmlService runs in a sandboxed iframe and may send postMessage with origin 'null'.
+ // The unguessable per-request ID binds the reply to this pending request.
+ if(e.origin!=='null'&&!/^https:\/\/([a-z0-9-]+\.)*(googleusercontent\.com|google\.com)$/.test(e.origin))return;
  finish(null,e.data.result)};
  window.addEventListener('message',handler);let timeout=setTimeout(()=>finish(Error('API tidak memberi respons (25s). Semak Deploy /exec dan akses Web App.')),25000);
  form.submit();
