@@ -52,7 +52,7 @@ body.scc-entered #gateway{display:none!important}
 <main class="wrap"><div id="sccSessionBar"><span id="sccWho"></span><button id="sccLogout" type="button">🚪 Keluar Sistem</button></div><nav class="tabs"><button class="tab active" data-mode="group">♟️ Dam Berkumpulan</button><button class="tab" data-mode="individual">👤 Dam Individu</button><button class="tab" data-mode="uno">🃏 Sifir UNO</button></nav>
 <section class="panel"><div class="toolbar" style="justify-content:space-between"><div><h2 id="heading"></h2><p class="note" id="desc"></p></div><div class="toolbar"><button class="secondary" id="export">⬇️ Sandaran JSON</button><button class="secondary" id="import">⬆️ Pulihkan</button><input type="file" id="importFile" accept=".json" hidden></div></div></section>
 <section class="panel cloud-panel"><h2>🏆 V9.3 — Akses Pertandingan</h2><div class="cloud-grid"><label>Peranan<select id="cloudRole"><option value="viewer">Penonton</option><option value="admin">Admin semua</option><option value="staff">Guru pengadil</option></select></label><label>PIN 4 digit<input id="cloudPin" type="password" inputmode="numeric" maxlength="4" placeholder="4 digit"></label><button class="primary" id="cloudConnect">🔓 Masuk</button><button class="secondary" id="cloudSync">🔄 Sync</button><button class="secondary" id="cloudPublish">☁️ Simpan tetapan</button></div><p class="cloud-status" id="cloudStatus">⚪ Belum disambung — data disimpan pada peranti sahaja.</p><p class="note">Admin mengurus cabutan dan pasukan. Guru pengadil hanya mengisi keputusan. Tiada pendaftaran akaun. Auto sync setiap 5 saat.</p></section><section class="stats" id="stats"></section><section class="panel"><div class="toolbar" style="justify-content:space-between"><h2 id="listTitle">👥 Senarai pasukan</h2><div class="toolbar"><label>Bilangan pasukan / peserta <input type="number" id="count" min="2" max="128" style="width:85px"></label><label id="playersCountLabel">Pemain setiap pasukan <input type="number" id="playersCount" min="1" max="30" style="width:78px" value="3"></label><button class="secondary" id="apply">Kemas kini bilangan</button></div></div><p class="note" id="editHint"></p><div class="teams" id="teams"></div><div class="actions"><button class="primary" id="draw">🎲 Cabutan rawak & bina carta</button><button class="secondary" id="showTeams">Sembunyi / papar senarai</button><button class="danger" id="reset">Kosongkan keputusan</button></div></section>
-<section class="panel"><div class="toolbar" style="justify-content:space-between"><h2>🏅 Carta Kalah Mati — Paparan Besar</h2><span class="note">Tatal ke kanan untuk pusingan seterusnya →</span></div><div id="champion" class="banner"></div><div class="rounds" id="rounds"></div></section><section class="panel"><h2>📋 Peraturan & penentuan seri</h2><div id="rules" class="note"></div></section></main><footer>SIFIR CHALLENGE CHAMPIONSHIP V9.4 · Welcome Gateway</footer><div id="overlay"></div>
+<section class="panel"><div class="toolbar" style="justify-content:space-between"><h2>🏅 Carta Kalah Mati — Paparan Besar</h2><span class="note">Tatal ke kanan untuk pusingan seterusnya →</span></div><div id="champion" class="banner"></div><div class="rounds" id="rounds"></div></section><section class="panel"><h2>📋 Peraturan & penentuan seri</h2><div id="rules" class="note"></div></section></main><footer>SIFIR CHALLENGE CHAMPIONSHIP V9.4.2 · Welcome Gateway</footer><div id="overlay"></div>
 <script>
 'use strict';
 const KEY='sifir-challenge-championship-v5-fixed', OLD='temin-sifir-championship-v1';
@@ -215,20 +215,35 @@ const SCC_API_URL='https://script.google.com/macros/s/AKfycbwLM6WJee7qgsvJ-WroEu
 let cloudOnline=false,cloudUrl=SCC_API_URL,cloudRole='viewer',cloudPin='',cloudCounter=0;
 const cloudStatus=t=>{$('#cloudStatus').textContent=t};
 function cloudRequest(payload){return new Promise((resolve,reject)=>{
- if(!cloudUrl)return reject(Error('URL API belum diisi'));
- let requestId='scc_'+crypto.randomUUID().replace(/-/g,''),frame=document.createElement('iframe');frame.name=requestId;frame.style.display='none';document.body.appendChild(frame);
- let form=document.createElement('form');form.method='POST';form.action=cloudUrl;form.target=requestId;form.style.display='none';
- const add=(k,v)=>{let input=document.createElement('input');input.name=k;input.value=v;form.appendChild(input)};
- add('requestId',requestId);add('payload',JSON.stringify({...payload,role:cloudRole,pin:cloudPin}));document.body.appendChild(form);
- let done=false;const finish=(err,result)=>{if(done)return;done=true;window.removeEventListener('message',handler);clearTimeout(timeout);form.remove();frame.remove();err?reject(err):resolve(result)};
- const handler=e=>{if(!e.data||e.data.type!=='SCC_V91_REPLY'||e.data.requestId!==requestId)return;
- // Apps Script HtmlService runs in a sandboxed iframe and may send postMessage with origin 'null'.
- // The unguessable per-request ID binds the reply to this pending request.
- if(e.origin!=='null'&&!/^https:\/\/([a-z0-9-]+\.)*(googleusercontent\.com|google\.com)$/.test(e.origin))return;
- finish(null,e.data.result)};
- window.addEventListener('message',handler);let timeout=setTimeout(()=>finish(Error('API tidak memberi respons (25s). Semak Deploy /exec dan akses Web App.')),25000);
- form.submit();
+  const requestId='scc_'+Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join('');
+  const callback='sccCallback_'+requestId.slice(4);
+  const frame=document.createElement('iframe');frame.name=requestId;frame.hidden=true;
+  const form=document.createElement('form');form.method='POST';form.action=cloudUrl;form.target=requestId;form.hidden=true;
+  const add=(k,v)=>{const i=document.createElement('input');i.name=k;i.value=v;form.appendChild(i)};
+  add('requestId',requestId);add('payload',JSON.stringify({...payload,role:cloudRole,pin:cloudPin}));
+  document.body.append(frame,form);
+  let done=false,attempts=0,activeScript=null;
+  const cleanup=()=>{done=true;clearTimeout(timer);delete window[callback];activeScript?.remove();form.remove();frame.remove()};
+  const fail=msg=>{if(done)return;cleanup();reject(Error(msg))};
+  const succeed=result=>{if(done)return;cleanup();resolve(result)};
+  window[callback]=data=>{
+    if(done||data?.requestId!==requestId)return;
+    if(data.pending){setTimeout(poll,450);return}
+    succeed(data.result);
+  };
+  const timer=setTimeout(()=>fail('API tidak memberi respons dalam 25 saat. Semak Executions dan sambungan.'),25000);
+  function poll(){
+    if(done)return;
+    attempts++;
+    activeScript?.remove();
+    const script=document.createElement('script');activeScript=script;
+    script.src=cloudUrl+'?requestId='+encodeURIComponent(requestId)+'&callback='+encodeURIComponent(callback)+'&_='+attempts;
+    script.onerror=()=>{if(!done)setTimeout(poll,800)};
+    document.head.appendChild(script);
+  }
+  try{form.submit();setTimeout(poll,650)}catch(e){fail('Gagal menghantar permintaan: '+e.message)}
 })}
+
 async function cloudLoad(cat,force=false){if(!cloudOnline||cloudBusy.has(cat)||(!force&&cloudDirty.has(cat)))return;
  try{let r=await cloudRequest({action:'load',category:cat});if(!r.ok)throw Error(r.error);
  if(r.revision!==cloudRev[cat]){if(r.data){state[cat]=r.data;localStorage.setItem(KEY,JSON.stringify(state))}cloudRev[cat]=r.revision;if(mode===cat)render()}
