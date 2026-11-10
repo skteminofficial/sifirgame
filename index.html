@@ -283,7 +283,7 @@ $('#cloudPublish').onclick=async()=>{if(!cloudOnline)return alert('Sambung API d
 $('#cloudSync').onclick=async()=>{if(!cloudOnline)return alert('Sambung dahulu');if(cloudDirty.size){for(let cat of [...cloudDirty])await cloudSave(cat)}else for(let cat of ['group','individual','uno'])await cloudLoad(cat,true)};
 setInterval(async()=>{if(!cloudOnline)return;for(let cat of ['group','individual','uno']){if(cloudDirty.has(cat))await cloudSave(cat);else await cloudLoad(cat)}},5000);
 // Role-based UI (server also checks writes). All categories remain viewable.
-const baseRender=render;render=function(){baseRender();if(!cloudOnline||cloudRole!=='admin'){for(let id of ['apply','draw','reset'])$('#'+id).disabled=true;$('#teams').querySelectorAll('input,button').forEach(x=>x.disabled=true)}if(!cloudOnline||cloudRole==='viewer')$('#rounds').querySelectorAll('[data-edit]').forEach(x=>x.disabled=true)};
+const baseRender=render;render=function(){baseRender();const isAdmin=cloudOnline&&cloudRole==='admin',canScore=cloudOnline&&(cloudRole==='admin'||cloudRole==='staff');for(const id of ['apply','draw','reset','import'])$('#'+id).disabled=!isAdmin;$('#teams').querySelectorAll('input,button').forEach(x=>x.disabled=!isAdmin);$('#rounds').querySelectorAll('[data-edit]').forEach(x=>x.disabled=!canScore);};
 // V9.4: authentication gateway. Never reveal tournament controls before successful API response.
 function gatewayMessage(msg){$('#gateError').textContent=msg}
 function gatewayEnter(){document.body.classList.add('scc-entered');$('#sccWho').textContent='👤 '+(cloudRole==='admin'?'Admin':cloudRole==='staff'?'Guru Pengadil':'Tetamu (Guest)');render()}
