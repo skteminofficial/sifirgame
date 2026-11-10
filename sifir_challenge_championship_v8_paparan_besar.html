@@ -1,0 +1,201 @@
+<!doctype html><html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIFIR CHALLENGE CHAMPIONSHIP</title><style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#17234c;background:#f4f7ff}*{box-sizing:border-box}body{margin:0}header{background:linear-gradient(120deg,#5426ca,#1377db 55%,#06b6a9);color:white;padding:24px 18px 30px}header .wrap{max-width:1250px;margin:auto}h1{margin:5px 0;font-size:clamp(25px,4vw,40px)}header p{margin:0;opacity:.9}.wrap{max-width:1250px;margin:auto;padding:0 15px}.tabs{display:flex;gap:12px;margin:-17px 0 18px;position:relative}.tab{border:0;border-radius:16px;background:white;box-shadow:0 4px 18px #1b246124;color:#4231a4;padding:15px 20px;font-weight:800;cursor:pointer;flex:1;font-size:16px}.tab.active{background:#ffdf58;color:#422a74}.panel{background:white;border:1px solid #e1e8f8;border-radius:18px;padding:17px;margin:14px 0;box-shadow:0 5px 15px #26367b0b}h2{margin:0 0 12px;font-size:21px}h3{margin:10px 0}button{cursor:pointer;font:inherit}button.primary,.btn{background:#5337c9;color:white;border:0;border-radius:11px;padding:11px 16px;font-weight:750}button.secondary{background:#eef0ff;color:#39289e;border:0;border-radius:10px;padding:9px 12px;font-weight:700}button.danger{background:#fff0f0;color:#a11e38;border:0;border-radius:10px;padding:9px 12px;font-weight:700}button:disabled{opacity:.5;cursor:not-allowed}input,select{font:inherit;border:1px solid #cbd5e8;border-radius:9px;padding:9px;width:100%;min-width:0}label{font-size:13px;font-weight:700;color:#536084}.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.stat{border-radius:14px;padding:13px;background:#f0f5ff}.stat b{font-size:24px;display:block}.stat span{font-size:12px;color:#64718b}.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;max-height:420px;overflow:auto}.team{background:#f8faff;border:1px solid #e4e9f8;border-radius:13px;padding:12px}.teamhead{display:flex;gap:7px;align-items:center;margin-bottom:8px}.teamhead input{font-weight:800}.players{display:grid;gap:6px}.player{display:flex;gap:7px;align-items:center}.player small{width:22px;flex-shrink:0;color:#6e7594}.rounds{display:flex;gap:14px;overflow-x:auto;padding:8px 2px 15px;align-items:flex-start}.round{min-width:265px;width:265px;flex-shrink:0}.roundtitle{background:#e8e8ff;border-radius:12px;padding:10px;text-align:center;font-weight:800;margin-bottom:10px}.match{border:1px solid #dce3f4;border-radius:13px;margin-bottom:12px;padding:10px;background:white;box-shadow:0 3px 8px #26367b0d}.match.complete{border-color:#65d7ab}.match .meta{color:#8490aa;font-size:11px;font-weight:700;margin-bottom:7px}.side{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px;border-radius:8px;font-size:13px}.side.winner{background:#e2fbed;color:#067047;font-weight:850}.side.loser{color:#8c95a9}.score{font-weight:900}.match button{margin-top:8px;width:100%}.note{color:#64718b;font-size:13px;line-height:1.5}.hint{background:#fff8d8;border-radius:11px;padding:10px;font-size:13px}.modal-back{position:fixed;inset:0;background:#131c48b8;display:flex;align-items:center;justify-content:center;padding:12px;z-index:10}.modal{background:white;border-radius:20px;padding:20px;width:min(620px,100%);max-height:92vh;overflow:auto}.modal h2{margin-bottom:5px}.pair{display:grid;grid-template-columns:1fr 90px 1fr;gap:8px;align-items:center;margin:9px 0;padding:10px;background:#f5f7ff;border-radius:10px}.pair .name{font-size:13px;font-weight:700}.pair select{padding:8px}.scoreline{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.hidden{display:none!important}footer{text-align:center;padding:25px;color:#8792a9;font-size:12px}@media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}.tab{padding:13px 8px;font-size:14px}.panel{padding:12px}.pair{grid-template-columns:1fr 70px 1fr;padding:7px;gap:5px}.pair .name{font-size:11px}.round{min-width:245px;width:245px}}
+.tabs{flex-wrap:wrap}.tab{min-width:170px}.teamhead button{flex-shrink:0}.players .player button{padding:5px 9px;border:0;border-radius:8px;background:#ffe7e7;color:#9b2337}.add{margin-top:8px;width:100%}.match .meta{display:flex;justify-content:space-between}.banner{background:linear-gradient(110deg,#ffe7a0,#f8b4d9);padding:14px;border-radius:14px}.rounds{min-height:190px}.badge{background:#fff0b9;padding:3px 8px;border-radius:10px;font-size:11px}.help{font-size:12px;color:#64718b}.setcard{border:1px solid #dce4f8;border-radius:13px;padding:12px;margin:12px 0;background:#f6f8ff}.sethead{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px}.setstatus{font-weight:800;color:#197d5a}.setgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}.setgrid select{font-size:12px;padding:9px 4px}.setgrid select:disabled{opacity:.5;background:#e7e9f0}.setsummary{font-size:12px;color:#536084}.liveboard{background:#e5faee;border-radius:12px;padding:12px;margin-top:12px}@media(max-width:420px){.setgrid{gap:4px}.setgrid select{font-size:11px}} 
+/* V6 presentation */
+#champion{position:relative;overflow:hidden;text-align:center;padding:22px 16px;border-radius:18px;background:linear-gradient(110deg,#ffeaa4,#ffb9d6,#b8d5ff);border:2px solid #fff4c0}
+#champion.is-champion{background:linear-gradient(120deg,#fff0a1,#ffc56e 45%,#ff9ed1);box-shadow:0 12px 30px #f3b33d55}
+.champ-head{font-weight:900;letter-spacing:2px;font-size:13px;color:#79451a}.champ-name{font-size:clamp(27px,5vw,51px);font-weight:1000;line-height:1.1;margin:10px auto;color:#502583;text-shadow:0 2px 0 #fff9}.champ-cup{font-size:clamp(55px,9vw,105px);filter:drop-shadow(0 6px 8px #a8744670);animation:cupfloat 2.5s ease-in-out infinite}.champ-button{font-size:16px!important;margin:12px auto 0;padding:13px 22px!important;background:#542ac4!important;color:white!important;border-radius:30px!important;border:0;font-weight:900}
+@keyframes cupfloat{50%{transform:translateY(-8px) rotate(4deg)}}
+.celebrate-overlay{position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 35%,#49228c,#13123d 75%);display:flex;align-items:center;justify-content:center;text-align:center;color:white;overflow:hidden;padding:20px}
+.celebrate-panel{position:relative;z-index:2;max-width:900px;width:100%}.celebrate-panel .cup{font-size:clamp(95px,17vw,190px);animation:cupfloat 2.5s infinite}.celebrate-panel h2{font-size:clamp(42px,9vw,95px);color:#ffdc62;margin:10px 0;text-shadow:0 4px 15px #0009}.celebrate-panel .teamname{font-size:clamp(30px,6vw,70px);font-weight:950;overflow-wrap:anywhere}.celebrate-panel button{margin:22px 7px 0;padding:13px 20px;border:0;border-radius:14px;background:#ffdc62;color:#31225b;font-weight:900}.celebrate-panel button.secondary-close{background:white}
+.confetti{position:absolute;top:-15vh;width:10px;height:19px;opacity:.9;animation:confettiFall var(--dur) linear infinite;animation-delay:var(--delay);transform:rotate(var(--rot));pointer-events:none}@keyframes confettiFall{to{top:115vh;transform:translateX(var(--drift)) rotate(900deg)}}
+@media(prefers-reduced-motion:reduce){.confetti,.champ-cup,.celebrate-panel .cup{animation:none}}
+@media print{.tabs,.actions,.champ-button,.modal-back{display:none!important}}
+
+/* V8: paparan besar, tiada kotak menegak terpotong */
+.rounds{max-height:none!important;min-height:450px;overflow-x:auto!important;overflow-y:hidden!important;width:100%;overscroll-behavior-x:contain}
+.bracket-card{padding:13px 14px!important;border-radius:15px!important;gap:7px!important}
+.bracket-card .meta{font-size:12px!important}
+.bracket-card .side{font-size:15px!important;min-height:31px!important;padding:5px 8px!important}
+.bracket-card .match-action{font-size:14px!important;padding:9px!important;margin-top:4px!important}
+.bracket-head{font-size:15px!important;height:75px!important}
+.bracket-head small{font-size:12px!important}
+/* V7: carta bracket profesional bersambung */
+.rounds{display:block;overflow:auto;max-height:78vh;min-height:330px;border-radius:16px;background:radial-gradient(circle at 50% 10%,#1b4576,#0b1738 68%);padding:0;position:relative;border:2px solid #254b85;scrollbar-color:#8ba9f2 #15284c}
+.bracket-board{position:relative;isolation:isolate;color:#fff}
+.bracket-lines{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:visible}
+.bracket-head{position:absolute;top:14px;height:62px;border:1px solid #6f91cf;background:linear-gradient(130deg,#253f7c,#172550);color:#fff;border-radius:13px;text-align:center;padding:9px 6px;font-weight:900;font-size:13px;box-shadow:0 4px 16px #0005}
+.bracket-head small{display:block;color:#d6e5ff;font-weight:600;margin-top:3px;font-size:11px}
+.bracket-card{position:absolute;background:#f9fbff;border:2px solid #90a9d6;border-radius:12px;padding:8px 9px;color:#17234c;box-shadow:0 5px 16px #0005;z-index:1;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.bracket-card.complete{border-color:#f9c950;box-shadow:0 0 0 1px #f9c95055,0 5px 16px #0006}
+.bracket-card .meta{font-size:10px;color:#67789d;font-weight:850;margin-bottom:2px;display:flex;justify-content:space-between}
+.bracket-card .side{padding:3px 5px;min-height:24px;gap:4px;font-size:12px}
+.bracket-card .side span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bracket-card .score{flex-shrink:0}
+.bracket-card .winner{background:#dbfbe9;color:#076d42}
+.bracket-card .match-action{width:100%;margin-top:3px;padding:5px 6px;font-size:11px;background:#e9edff;color:#342a9d;border:0;border-radius:7px;font-weight:850}
+.bracket-card .match-action:hover{background:#d9e1ff}
+.bracket-card .bye-tag{font-size:10px;color:#8b5800;background:#fff0b7;border-radius:5px;padding:2px 5px}
+.bracket-guide{color:#4b6193;font-size:12px;margin:7px 0 0}
+@media print{.rounds{max-height:none;overflow:visible}.bracket-board{transform-origin:top left}}
+</style></head><body>
+<header><div class="wrap"><div style="font-weight:800;letter-spacing:2px;font-size:12px">🏆 KEJOHANAN MATEMATIK INTERAKTIF</div><h1>✨ SIFIR CHALLENGE CHAMPIONSHIP</h1><p>Dam Sifir Berkumpulan · Dam Sifir Individu · Sifir UNO</p></div></header>
+<main class="wrap"><nav class="tabs"><button class="tab active" data-mode="group">♟️ Dam Berkumpulan</button><button class="tab" data-mode="individual">👤 Dam Individu</button><button class="tab" data-mode="uno">🃏 Sifir UNO</button></nav>
+<section class="panel"><div class="toolbar" style="justify-content:space-between"><div><h2 id="heading"></h2><p class="note" id="desc"></p></div><div class="toolbar"><button class="secondary" id="export">⬇️ Sandaran JSON</button><button class="secondary" id="import">⬆️ Pulihkan</button><input type="file" id="importFile" accept=".json" hidden></div></div></section>
+<section class="stats" id="stats"></section><section class="panel"><div class="toolbar" style="justify-content:space-between"><h2 id="listTitle">👥 Senarai pasukan</h2><div class="toolbar"><label>Bilangan pasukan / peserta <input type="number" id="count" min="2" max="128" style="width:85px"></label><button class="secondary" id="apply">Kemas kini bilangan</button></div></div><p class="note" id="editHint"></p><div class="teams" id="teams"></div><div class="actions"><button class="primary" id="draw">🎲 Cabutan rawak & bina carta</button><button class="secondary" id="showTeams">Sembunyi / papar senarai</button><button class="danger" id="reset">Kosongkan keputusan</button></div></section>
+<section class="panel"><div class="toolbar" style="justify-content:space-between"><h2>🏅 Carta Kalah Mati — Paparan Besar</h2><span class="note">Tatal ke kanan untuk pusingan seterusnya →</span></div><div id="champion" class="banner"></div><div class="rounds" id="rounds"></div></section><section class="panel"><h2>📋 Peraturan & penentuan seri</h2><div id="rules" class="note"></div></section></main><footer>SIFIR CHALLENGE CHAMPIONSHIP V7 · Data disimpan pada pelayar peranti ini</footer><div id="overlay"></div>
+<script>
+'use strict';
+const KEY='sifir-challenge-championship-v5-fixed', OLD='temin-sifir-championship-v1';
+const $=q=>document.querySelector(q), esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const alpha=i=>{let out='';for(i++;i>0;i=Math.floor((i-1)/26))out=String.fromCharCode(65+(i-1)%26)+out;return out};
+const makeTeam=(i,mode)=>({id:'t'+i,name:mode==='individual'?'Peserta '+alpha(i):'Pasukan '+alpha(i),players:mode==='group'?Array(3).fill(''):mode==='uno'?Array(5).fill(''):[]});
+const code=(t,j)=>alpha(Number(String(t.id).replace('t',''))||0)+(j+1);
+const playerLabel=(t,j)=>code(t,j)+(t.players[j]&& !/^Pemain \d+$/i.test(t.players[j])?' — '+t.players[j]:'');
+const init=mode=>({teams:Array.from({length:26},(_,i)=>makeTeam(i,mode)),rounds:[],started:false});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){};
+if(!state||!state.group||!state.individual||!state.uno){state={group:init('group'),individual:init('individual'),uno:init('uno')};try{const oldV4=JSON.parse(localStorage.getItem('sifir-challenge-championship-v3'));if(oldV4?.group?.teams&&oldV4?.individual?.teams&&oldV4?.uno?.teams){for(const k of ['group','individual','uno'])state[k].teams=oldV4[k].teams.map((t,i)=>({...t,name:/^(Pasukan|Peserta) \d+$/.test(t.name)?(k==='individual'?'Peserta ':'Pasukan ')+alpha(i):t.name}));}}catch(e){}try{let previous=JSON.parse(localStorage.getItem('sifir-challenge-championship-v2'));if(previous?.group&&previous?.individual&&previous?.uno){for(const k of ['group','individual','uno'])state[k].teams=previous[k].teams;} }catch(e){}try{let old=JSON.parse(localStorage.getItem(OLD));if(old?.dam?.teams){state.group.teams=old.dam.teams;state.group.rounds=[]}if(old?.uno?.teams){state.uno.teams=old.uno.teams;state.uno.rounds=[]}}catch(e){}}
+let mode='group',visible=true;let countDraft={};const data=()=>state[mode], save=()=>localStorage.setItem(KEY,JSON.stringify(state));const team=id=>data().teams.find(t=>t.id===id);const name=id=>id?team(id)?.name||'Tidak ditemui':'Menunggu pemenang';
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+// Standard fixed knockout bracket: BYEs are assigned only in the first round.
+ function makeBracket(){
+  const d=data(), ids=shuffle(d.teams.map(t=>t.id));
+  const size=2**Math.ceil(Math.log2(ids.length)), byeCount=size-ids.length, firstMatches=size/2;
+  const slots=Array.from({length:firstMatches},()=>[null,null]);
+  const order=shuffle(Array.from({length:firstMatches},(_,i)=>i));
+  // Put one real team in each BYE pair. Fill every remaining slot exactly once.
+  for(let i=0;i<byeCount;i++)slots[order[i]][0]=ids.shift();
+  for(const pair of slots.filter(p=>!p[0]&&!p[1]))for(let j=0;j<2;j++)pair[j]=ids.shift();
+  if(ids.length||slots.some(pair=>!pair[0]&&!pair[1]))throw Error('Cabutan tidak lengkap');
+  d.rounds=[];for(let width=firstMatches,r=0;width>=1;width/=2,r++)d.rounds.push(Array.from({length:width},(_,i)=>({id:`r${r}m${i}`,a:null,b:null,winner:null,results:null,bye:false})));
+  d.rounds[0].forEach((m,i)=>{m.a=slots[i][0];m.b=slots[i][1];m.bye=!m.a||!m.b;m.winner=m.bye?(m.a||m.b):null});
+  d.started=true;propagate();save();
+ }
+ function bracketValid(d){
+  if(!d.started)return true;
+  const n=d.teams.length,size=2**Math.ceil(Math.log2(n)), expected=size-n;
+  if(d.rounds.length!==Math.log2(size)||d.rounds[0]?.length!==size/2)return false;
+  const first=d.rounds[0], ids=first.flatMap(m=>[m.a,m.b].filter(Boolean));
+  return first.filter(m=>m.bye).length===expected&&new Set(ids).size===n&&ids.length===n&&ids.every(id=>d.teams.some(t=>t.id===id))&&first.every(m=>m.a||m.b);
+ }
+ // Old versions sometimes left a stale bracket after participant counts changed.
+ for(const k of ['group','individual','uno'])if(!bracketValid(state[k])){state[k].rounds=[];state[k].started=false;}
+function propagate(){
+ const d=data();
+ for(let r=1;r<d.rounds.length;r++){
+  const prior=d.rounds[r-1],round=d.rounds[r];
+  for(let i=0;i<round.length;i++){
+   const m=round[i],a=prior[i*2]?.winner??null,b=prior[i*2+1]?.winner??null;
+   if(m.a!==a||m.b!==b){m.a=a;m.b=b;m.results=null;m.winner=null}
+   m.bye=false;
+  }
+ }
+}
+function winner(m){if(m.bye)return m.a||m.b;if(!m.results)return null;if(mode==='uno'){let {a,b}=m.results;return a===b?null:a>b?m.a:m.b}if(mode==='individual')return m.results.a===m.results.b?null:m.results.a>m.results.b?m.a:m.b;let vals=m.results.pairs||[];if(vals.length!==Math.max(team(m.a)?.players.length||0,team(m.b)?.players.length||0))return null;let aw=vals.filter(x=>x===1).length,bw=vals.filter(x=>x===-1).length,remaining=vals.filter(x=>x===null).length;if(aw>bw+remaining)return m.a;if(bw>aw+remaining)return m.b;if(remaining)return null;if(aw===bw)return m.results.tie===1?m.a:m.results.tie===-1?m.b:null;return aw>bw?m.a:m.b}
+function label(r,total){return r===total-1?'🏆 AKHIR':r===total-2?'🔥 SEPARUH AKHIR':r===total-3?'⭐ SUKU AKHIR':r===0?'🎲 PUSINGAN PERTAMA':'⚡ PUSINGAN '+(r+1)}
+function renderBracket(d){
+ if(!d.started)return '<p class="note" style="padding:20px;color:white">Tekan “Cabutan rawak & bina carta” untuk memulakan kejohanan.</p>';
+ const rounds=d.rounds, total=rounds.length, cw=282,gap=105,left=26,head=116,cardH=148,step=182;
+ const y=(r,i)=>head+((i+.5)*Math.pow(2,r)-.5)*step;
+ const width=left+total*(cw+gap)+20,height=Math.max(360,head+rounds[0].length*step+35);
+ let paths='';
+ for(let r=0;r<total-1;r++)for(let i=0;i<rounds[r].length;i++){
+   const x1=left+r*(cw+gap)+cw, x2=left+(r+1)*(cw+gap),ym=y(r,i)+cardH/2,yn=y(r+1,Math.floor(i/2))+cardH/2,mx=x1+gap/2;
+   const active=!!rounds[r][i].winner;
+   paths+=`<path d="M ${x1} ${ym} H ${mx} V ${yn} H ${x2}" fill="none" stroke="${active?'#ffd465':'#668bb9'}" stroke-width="${active?3:2}" stroke-linejoin="round" opacity="${active?1:.78}"/>`;
+ }
+ let html=`<div class="bracket-board" style="width:${width}px;height:${height}px"><svg class="bracket-lines" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" aria-hidden="true">${paths}</svg>`;
+ for(let r=0;r<total;r++){
+   const x=left+r*(cw+gap),round=rounds[r];
+   html+=`<div class="bracket-head" style="left:${x}px;width:${cw}px">${label(r,total)}<small>${round.filter(m=>!m.bye).length} perlawanan${round.some(m=>m.bye)?' · '+round.filter(m=>m.bye).length+' BYE':''}</small></div>`;
+   for(let i=0;i<round.length;i++){
+     const m=round[i],top=y(r,i),side=(id,k)=>`<div class="side ${m.winner===id&&id?'winner':m.winner&&id?'loser':''}"><span>${m.winner===id&&id?'🏅 ':'○ '}${esc(k==='b'&&m.bye&&!id?'BYE':name(id))}</span><span class="score">${m.results?(mode==='uno'?m.results[k]:mode==='individual'?m.results[k]:(m.results.pairs||[]).filter(v=>v===(k==='a'?1:-1)).length):''}</span></div>`;
+     html+=`<div class="bracket-card ${m.winner?'complete':''}" style="left:${x}px;top:${top}px;width:${cw}px;height:${cardH}px"><div class="meta"><span>PERLAWANAN ${i+1}</span>${m.bye?'<span class="bye-tag">BYE</span>':''}</div>${side(m.a,'a')}${side(m.b,'b')}${!m.bye&&m.a&&m.b?`<button class="match-action" data-edit="${r},${i}">${m.winner?'✏️ Edit keputusan':'📝 Isi keputusan'}</button>`:''}</div>`;
+   }
+ }
+ return html+'</div>';
+}
+
+function render(){let d=data(),n=d.teams.length;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===mode));$('#heading').textContent=mode==='group'?'♟️ Dam Sifir Berkumpulan':mode==='individual'?'👤 Dam Sifir Individu':'🃏 Sifir UNO Berkumpulan';$('#desc').textContent=mode==='group'?'Bilangan pemain fleksibel · Setiap pertemuan best of 3 · Kemenangan individu menentukan pasukan mara':mode==='individual'?'1 lawan 1 · Dua set dahulu · Jika seri 1–1, set ketiga menentukan pemenang':'Jumlah stick pasukan · Satu perlawanan · Rebutan tambahan jika seri';$('#listTitle').textContent=mode==='individual'?'👤 Senarai peserta':'👥 Senarai pasukan & pemain';$('#editHint').textContent=mode==='individual'?'Edit nama peserta. Semua perubahan disimpan secara automatik.':'Edit nama pasukan dan pemain. Gunakan + Tambah pemain atau × untuk membuang pemain. Pastikan kedua-dua pasukan mempunyai bilangan pemain sama sebelum memasukkan keputusan.';$('#count').value=countDraft[mode]??n;let finished=d.rounds.flat().filter(m=>m.winner&&!m.bye).length,champ=d.started?d.rounds.at(-1)[0].winner:null;$('#stats').innerHTML=[['Pasukan / peserta',n],['Jumlah pemain',mode==='individual'?n:d.teams.reduce((a,t)=>a+t.players.length,0)],['Selesai',finished+' / '+(d.started?n-1:0)],['Juara',champ?'🏆 '+name(champ):'Belum ada']].map(([k,v])=>`<div class="stat"><b style="font-size:${k==='Juara'?16:24}px">${esc(v)}</b><span>${k}</span></div>`).join('');$('#teams').classList.toggle('hidden',!visible);$('#teams').innerHTML=d.teams.map((t,i)=>`<div class="team"><div class="teamhead"><span>${mode==='individual'?'👤':'🏷️'}</span><input aria-label="Nama ${i+1}" data-ti="${i}" data-name="team" value="${esc(t.name)}"></div>${mode==='individual'?'':`<div class="players">${t.players.map((p,j)=>`<div class="player"><small style="width:42px;font-weight:800">${esc(code(t,j))}</small><input placeholder="Nama pemain (pilihan)" aria-label="Pemain ${j+1}" data-ti="${i}" data-pi="${j}" value="${esc(/^Pemain \d+$/i.test(p)?'':p)}"><button data-remove="${i},${j}" title="Buang pemain">×</button></div>`).join('')}</div><button class="secondary add" data-add="${i}">＋ Tambah pemain</button>`}</div>`).join('');$('#champion').classList.toggle('is-champion',!!champ);$('#champion').innerHTML=champ?`<div class="champ-head">✨ SIFIR CHALLENGE CHAMPIONSHIP ✨</div><div class="champ-cup">🏆</div><div class="champ-head">TAHNIAH! JUARA KEJOHANAN</div><div class="champ-name">${esc(name(champ))}</div><button class="champ-button" id="showChampion" type="button">🎉 PAPARKAN JUARA DI SKRIN BESAR</button>`:'🎯 Isi keputusan perlawanan untuk melihat laluan ke final secara automatik.';$('#rounds').innerHTML=renderBracket(d);$('#rules').textContent=mode==='group'?'Setiap pemain bertemu pemain bernombor sama dari pasukan lawan (A1–B1, A2–B2 dan seterusnya). Setiap pasangan bermain dua set; jika 1–1, set ketiga dimainkan. Pasukan dengan kemenangan individu terbanyak mara. Jika kemenangan pasukan terikat (contohnya 2–2), pilih seorang wakil setiap pasukan untuk perlawanan penentuan best of 3. Bilangan pemain kedua-dua pasukan mesti sama. Jika tidak sama, selaraskan senarai sebelum bermain.':mode==='individual'?'Setiap peserta bermain 2 set dahulu. Jika seri 1–1, jalankan set ketiga. Peserta yang memenangi 2 set mara.':'Setiap rebutan kad sifir menghasilkan satu stick untuk pemain yang menjawab betul dahulu. Catat jumlah stick terkumpul bagi setiap pasukan. Jika seri, jalankan dua rebutan tambahan; jika masih seri, sambung satu rebutan pada satu masa sehingga ada pemenang.'}
+function close(){$('#overlay').innerHTML=''}
+function showChampion(){
+ const d=data(),champ=d.started&&d.rounds.length?d.rounds.at(-1)[0].winner:null;if(!champ)return;
+ const host=document.createElement('div');host.className='celebrate-overlay';host.setAttribute('role','dialog');host.setAttribute('aria-modal','true');host.setAttribute('aria-label','Pengumuman juara');
+ const palette=['#ffe65a','#ff76bb','#72e9f3','#a4ff83','#ffffff','#ff9d50'];
+ for(let i=0;i<85;i++){const c=document.createElement('i');c.className='confetti';c.style.left=(Math.random()*100)+'%';c.style.background=palette[i%palette.length];c.style.setProperty('--dur',(3+Math.random()*4)+'s');c.style.setProperty('--delay',(-Math.random()*7)+'s');c.style.setProperty('--drift',((Math.random()-.5)*250)+'px');c.style.setProperty('--rot',(Math.random()*360)+'deg');host.appendChild(c)}
+ const panel=document.createElement('div');panel.className='celebrate-panel';panel.innerHTML=`<div class="cup">🏆</div><h2>JUARA!</h2><div class="teamname">${esc(name(champ))}</div><p>🎉 TAHNIAH • SIFIR CHALLENGE CHAMPIONSHIP 🎉</p><button type="button" id="champFullscreen">⛶ Skrin penuh</button><button type="button" class="secondary-close" id="champClose">✕ Kembali ke carta</button>`;host.appendChild(panel);document.body.appendChild(host);
+ const dismiss=()=>{document.removeEventListener('keydown',onKey);host.remove();if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})};
+ const onKey=e=>{if(e.key==='Escape')dismiss()};document.addEventListener('keydown',onKey);
+ panel.querySelector('#champClose').onclick=dismiss;
+ panel.querySelector('#champFullscreen').onclick=()=>{if(!document.fullscreenElement&&host.requestFullscreen)host.requestFullscreen().catch(()=>alert('Mod skrin penuh tidak disokong pada pelayar ini.'))};
+}
+$('#champion').addEventListener('click',e=>{if(e.target.closest('#showChampion'))showChampion()});
+function edit(r,i){
+ const d=data(),m=d.rounds[r][i];if(!m?.a||!m?.b||m.bye)return;
+ const a=team(m.a),b=team(m.b);let body='';
+ const setOptions=(v)=>`<option value="">— Pilih —</option><option value="1" ${v===1?'selected':''}>${esc(a.name)}</option><option value="-1" ${v===-1?'selected':''}>${esc(b.name)}</option>`;
+ const setCard=(j,p,q,vals,tie=false)=>`<div class="setcard" data-card="${tie?'tie':j}"><div class="sethead"><strong>${tie?'⚡ Perlawanan penentuan':`${esc(p)} vs ${esc(q)}`}</strong><span class="setstatus" id="status-${tie?'tie':j}">Belum selesai</span></div><div class="setgrid">${[0,1,2].map(k=>`<label>Set ${k+1}<select class="setpick" data-set="${k}" aria-label="Pemenang set ${k+1}">${setOptions(vals?.[k]??null)}</select></label>`).join('')}</div><div class="setsummary" id="summary-${tie?'tie':j}"></div></div>`;
+ if(mode==='uno')body=`<p class="hint">Masukkan jumlah stick terkumpul. Jika seri, teruskan rebutan tambahan sehingga ada pemenang.</p><div class="scoreline"><label>${esc(a.name)}<input type="number" id="scoreA" min="0" step="1" value="${m.results?.a??0}"></label><label>${esc(b.name)}<input type="number" id="scoreB" min="0" step="1" value="${m.results?.b??0}"></label></div>`;
+ else if(mode==='individual')body=`<p class="hint">Pilih pemenang Set 1 dan Set 2. Set 3 hanya perlu jika keputusan 1–1.</p>${setCard(0,a.name,b.name,m.results?.sets??null)}`;
+ else {
+  if(a.players.length!==b.players.length||a.players.length<1){alert('Bilangan pemain kedua-dua pasukan mesti sama dan sekurang-kurangnya seorang. Edit senarai pemain dahulu.');return}
+  body=`<p class="hint">Pilih pemenang setiap set. Sistem mengira keputusan individu dan kemenangan pasukan secara automatik.</p>${a.players.map((p,j)=>setCard(j,playerLabel(a,j),playerLabel(b,j),m.results?.sets?.[j]??null)).join('')}<div class="liveboard" id="liveboard"></div><div id="tieWrap" class="hidden"><p class="hint">Kemenangan individu terikat. Pilih seorang wakil setiap pasukan dan mainkan best of 3 set.</p>${setCard(0,a.name,b.name,m.results?.tieSets??null,true)}</div>`;
+ }
+ $('#overlay').innerHTML=`<div class="modal-back"><div class="modal" role="dialog" aria-modal="true"><h2>🏁 Rekod keputusan mengikut set</h2><p class="note"><strong>${esc(a.name)}</strong> VS <strong>${esc(b.name)}</strong></p>${body}<div class="actions"><button class="primary" id="saveResult">💾 Simpan keputusan</button><button class="secondary" id="close">Batal</button>${m.results?'<button class="danger" id="clearResult">Padam keputusan</button>':''}</div></div></div>`;
+ const cards=[...document.querySelectorAll('[data-card]')];
+ const calculate=card=>{
+  const inputs=[...card.querySelectorAll('.setpick')],vals=inputs.map(el=>el.value===''?null:Number(el.value));
+  const first=vals.slice(0,2),aWins=first.filter(v=>v===1).length,bWins=first.filter(v=>v===-1).length;
+  const thirdNeeded=aWins===1&&bWins===1;
+  inputs[2].disabled=!thirdNeeded;
+  if(!thirdNeeded){inputs[2].value='';vals[2]=null}
+  const aw=vals.filter(v=>v===1).length,bw=vals.filter(v=>v===-1).length;
+  const complete=first.every(v=>v!==null)&&(!thirdNeeded||vals[2]!==null);
+  const win=complete?(aw>bw?1:-1):null;
+  const key=card.dataset.card;
+  $('#status-'+key).textContent=win===1?`${a.name} menang`:win===-1?`${b.name} menang`:'Belum selesai';
+  $('#summary-'+key).textContent=`Set dimenangi: ${a.name} ${aw} – ${bw} ${b.name}${thirdNeeded?' · Set 3 penentuan':''}`;
+  return {vals,win,complete};
+ };
+ const refresh=()=>{
+  if(mode==='uno')return;
+  const regular=cards.filter(c=>c.dataset.card!=='tie').map(calculate);
+  if(mode==='group'){
+   const aw=regular.filter(v=>v.win===1).length,bw=regular.filter(v=>v.win===-1).length;
+   const all=regular.every(v=>v.complete),tied=all&&aw===bw;
+   $('#tieWrap').classList.toggle('hidden',!tied);
+   if(tied)calculate(cards.find(c=>c.dataset.card==='tie'));
+   const tieResult=tied?calculate(cards.find(c=>c.dataset.card==='tie')):null;
+   const fullyDone=all&&(!tied||tieResult?.complete);
+   const decided=fullyDone?(tied?(tieResult.win===1?a.name:b.name):(aw>bw?a.name:b.name)):null;
+   const leader=aw>bw?a.name:bw>aw?b.name:null;
+   const remaining=regular.filter(v=>!v.complete).length;
+   const secured=leader&&Math.abs(aw-bw)>remaining;
+   const status=fullyDone?'🏁 KEPUTUSAN PENUH':secured?'🏆 PEMENANG DISAHKAN (AWAL)':tied?'⚡ PERLAWANAN PENENTUAN':'⏳ KEPUTUSAN SEMENTARA';
+   $('#liveboard').innerHTML=`<strong>${status}: ${esc(a.name)} ${aw} – ${bw} ${esc(b.name)}</strong><div class="note">${fullyDone?`🏆 ${esc(decided)} layak ke pusingan seterusnya.`:tied?'Seri — lengkapkan perlawanan penentuan.':secured?`🏅 ${esc(leader)} telah memastikan kemenangan, tetapi semua pemain masih boleh menghabiskan perlawanan.`:'Lengkapkan semua pertemuan pemain.'}</div>`;
+  }
+ };
+ $('#overlay').addEventListener('change',e=>{if(e.target.classList.contains('setpick'))refresh()});refresh();
+ $('#close').onclick=()=>close();$('#overlay .modal-back').onclick=e=>{if(e.target.classList.contains('modal-back'))close()};
+ $('#saveResult').onclick=()=>{
+  let results;
+  if(mode==='uno'){const av=Number($('#scoreA').value),bv=Number($('#scoreB').value);if(!Number.isInteger(av)||!Number.isInteger(bv)||av<0||bv<0||av===bv){alert('Jumlah stick mesti nombor bulat, tidak negatif dan tidak seri.');return}results={a:av,b:bv}}
+  else if(mode==='individual'){
+   const v=calculate(cards[0]);if(!v.complete){alert('Lengkapkan Set 1, Set 2 dan Set 3 jika seri.');return}
+   results={sets:v.vals,a:v.vals.filter(x=>x===1).length,b:v.vals.filter(x=>x===-1).length};
+  }else{
+   const regular=cards.filter(c=>c.dataset.card!=='tie').map(calculate);
+   const wa=regular.filter(v=>v.win===1).length,wb=regular.filter(v=>v.win===-1).length,remain=regular.filter(v=>!v.complete).length;const securedEarly=wa>wb+remain||wb>wa+remain;if(remain&&!securedEarly){alert('Lengkapkan keputusan pemain sehingga pemenang pasukan dapat dipastikan.');return}
+   const pairs=regular.map(v=>v.win),aw=pairs.filter(v=>v===1).length,bw=pairs.filter(v=>v===-1).length;
+   let tie=null,tieSets=null;
+   if(aw===bw){const v=calculate(cards.find(c=>c.dataset.card==='tie'));if(!v.complete){alert('Keputusan pasukan seri. Lengkapkan perlawanan penentuan.');return}tie=v.win;tieSets=v.vals}
+   results={pairs,sets:regular.map(v=>v.vals),tie,tieSets};
+  }
+  if(m.results&&d.rounds.slice(r+1).flat().some(x=>x.results)&&!confirm('Mengubah keputusan boleh memadam keputusan susulan yang terjejas. Teruskan?'))return;
+  m.results=results;m.winner=winner(m);propagate();save();close();render();
+ };
+ if($('#clearResult'))$('#clearResult').onclick=()=>{if(confirm('Padam keputusan ini dan keputusan susulan yang terjejas?')){m.results=null;m.winner=null;propagate();save();close();render()}};
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;render()});$('#showTeams').onclick=()=>{visible=!visible;render()};$('#teams').addEventListener('change',e=>{let x=e.target,idx=Number(x.dataset.ti);if(!Number.isInteger(idx)||!data().teams[idx])return;let t=data().teams[idx];if(x.dataset.name==='team')t.name=x.value.trim()||(mode==='individual'?'Peserta ':'Pasukan ')+alpha(idx);else if(x.dataset.pi!==undefined)t.players[Number(x.dataset.pi)]=x.value.trim();save();render()});$('#teams').addEventListener('click',e=>{let add=e.target.closest('[data-add]'),remove=e.target.closest('[data-remove]');if(add){let t=data().teams[Number(add.dataset.add)];if(t.players.length>=30)return alert('Maksimum 30 pemain.');t.players.push('');save();render()}if(remove){let [i,j]=remove.dataset.remove.split(',').map(Number),t=data().teams[i];if(t.players.length<=1)return alert('Sekurang-kurangnya seorang pemain diperlukan.');if(data().started&&!confirm('Mengubah pemain semasa kejohanan mungkin menjejaskan keputusan yang sudah direkod. Teruskan?'))return;t.players.splice(j,1);data().rounds=[];data().started=false;save();render()}});
+$('#count').addEventListener('input',e=>{countDraft[mode]=e.target.value});$('#apply').onclick=()=>{let d=data(),n=Number($('#count').value);if(!Number.isInteger(n)||n<2||n>128)return alert('Bilangan pasukan/peserta mesti 2–128.');if(d.started&&!confirm('Mengubah bilangan akan mengosongkan carta dan keputusan. Teruskan?'))return;d.teams=Array.from({length:n},(_,i)=>d.teams[i]||makeTeam(i,mode));d.rounds=[];d.started=false;delete countDraft[mode];save();render();alert('Bilangan berjaya dikemas kini kepada '+n+'. Tekan Cabutan Rawak untuk menjana bracket baharu.');};$('#draw').onclick=()=>{if(data().started&&!confirm('Cabutan semula akan memadam semua keputusan. Teruskan?'))return;makeBracket();if(!bracketValid(data())){alert('Ralat struktur carta. Cabutan dibatalkan.');data().rounds=[];data().started=false;save();}render()};$('#reset').onclick=()=>{if(confirm('Kosongkan carta dan keputusan? Nama peserta dikekalkan.')){data().rounds=[];data().started=false;save();render()}};$('#rounds').addEventListener('click',e=>{let b=e.target.closest('[data-edit]');if(b){let [r,i]=b.dataset.edit.split(',').map(Number);edit(r,i)}});$('#export').onclick=()=>{let blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='backup-sifir-challenge.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};$('#import').onclick=()=>$('#importFile').click();$('#importFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let v=JSON.parse(await f.text());if(!v.group?.teams||!v.individual?.teams||!v.uno?.teams)throw Error();if(confirm('Gantikan semua data dengan fail sandaran?')){state=v;for(const k of ['group','individual','uno'])if(!bracketValid(state[k])){state[k].rounds=[];state[k].started=false;}save();render()}}catch(err){alert('Fail sandaran tidak sah.')}e.target.value=''};render();
+</script></body></html>
