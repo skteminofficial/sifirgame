@@ -250,23 +250,23 @@ function cloudRequest(payload){return new Promise((resolve,reject)=>{
   const succeed=result=>{if(done)return;cleanup();resolve(result)};
   window[callback]=data=>{
     if(done||data?.requestId!==requestId)return;
-    if(data.pending){setTimeout(poll,450);return}
+    if(data.pending){setTimeout(poll,Math.min(1500,500+attempts*100));return}
     succeed(data.result);
   };
-  const timer=setTimeout(()=>fail('API tidak memberi respons dalam 25 saat. Semak Executions dan sambungan.'),25000);
+  const timer=setTimeout(()=>fail('API tidak memberi respons dalam 35 saat. Semak Executions dan sambungan.'),35000);
   function poll(){
     if(done)return;
     attempts++;
     activeScript?.remove();
     const script=document.createElement('script');activeScript=script;
     script.src=cloudUrl+'?requestId='+encodeURIComponent(requestId)+'&callback='+encodeURIComponent(callback)+'&_='+attempts;
-    script.onerror=()=>{if(!done)setTimeout(poll,800)};
+    script.onerror=()=>{if(!done)setTimeout(poll,1200)};
     document.head.appendChild(script);
   }
-  try{form.submit();setTimeout(poll,650)}catch(e){fail('Gagal menghantar permintaan: '+e.message)}
+  try{form.submit();setTimeout(poll,900)}catch(e){fail('Gagal menghantar permintaan: '+e.message)}
 })}
 
-async function cloudLoad(cat,force=false){if(!cloudOnline||cloudBusy.has(cat)||(!force&&cloudDirty.has(cat)))return;
+async function cloudLoad(cat,force=false){if(!cloudOnline||cloudBusy.has(cat)||cloudDirty.has(cat))return;
  try{let r=await cloudRequest({action:'load',category:cat});if(!r.ok)throw Error(r.error);
  if(r.revision!==cloudRev[cat]){if(r.data){state[cat]=r.data;localStorage.setItem(KEY,JSON.stringify(state))}cloudRev[cat]=r.revision;if(mode===cat)render()}
  cloudStatus('🟢 Cloud disambung · '+cat+' rev '+cloudRev[cat]+' · '+new Date().toLocaleTimeString('ms-MY'))
@@ -274,11 +274,11 @@ async function cloudLoad(cat,force=false){if(!cloudOnline||cloudBusy.has(cat)||(
 async function cloudSave(cat){if(!cloudOnline||cloudRole!=='admin'||!cloudDirty.has(cat)||cloudBusy.has(cat))return;
  cloudBusy.add(cat);let snapshot=JSON.stringify(state[cat]);try{
  let r=await cloudRequest({action:'save',category:cat,revision:cloudRev[cat],data:JSON.parse(snapshot),note:'Simpan '+cat});
- if(r.conflict){cloudStatus('🟠 KONFLIK '+cat+' — cloud lebih baharu. Eksport JSON dahulu, kemudian Sync.');cloudOnline=false;return}
+ if(r.conflict){cloudStatus('🟠 KONFLIK '+cat+' — data lokal dikekalkan. Semak sebelum sync.');cloudDirty.delete(cat);return}
  if(!r.ok)throw Error(r.error);cloudRev[cat]=r.revision;if(JSON.stringify(state[cat])===snapshot)cloudDirty.delete(cat);
  cloudStatus('🟢 Disimpan '+cat+' · rev '+r.revision+' · '+new Date().toLocaleTimeString('ms-MY'));
  }catch(e){cloudStatus('🔴 Gagal simpan '+cat+': '+e.message+' · data lokal masih ada')}
- finally{cloudBusy.delete(cat);if(cloudOnline&&cloudDirty.has(cat))scheduleCloudSave(cat)}}
+ finally{cloudBusy.delete(cat)}}
 async function cloudSaveMatch(cat,round,index,match,proposedRounds,proposedThird){
  if(!cloudOnline||!['admin','staff'].includes(cloudRole))return alert('Masuk dengan PIN petugas dahulu');
  if(cloudBusy.has(cat))return alert('Sedang menyegerak. Cuba sebentar lagi.');
@@ -303,32 +303,53 @@ $('#cloudConnect').onclick=async()=>{cloudUrl=SCC_API_URL;cloudRole=$('#cloudRol
  }catch(e){cloudOnline=false;cloudStatus('🔴 '+e.message)}};
 $('#cloudPublish').onclick=async()=>{if(!cloudOnline)return alert('Sambung API dahulu');if(cloudRole!=='admin')return alert('Hanya admin boleh simpan tetapan pasukan dan cabutan');if(!confirm('Hantar data kategori '+mode+' daripada peranti ini ke Google Sheets? Pastikan ini data yang betul.'))return;cloudDirty.add(mode);await cloudSave(mode)};
 $('#cloudSync').onclick=async()=>{if(!cloudOnline)return alert('Sambung dahulu');if(cloudDirty.size){for(let cat of [...cloudDirty])await cloudSave(cat)}else for(let cat of ['group','individual','uno'])await cloudLoad(cat,true)};
-setInterval(async()=>{if(!cloudOnline)return;for(let cat of ['group','individual','uno']){if(cloudDirty.has(cat))await cloudSave(cat);else await cloudLoad(cat)}},5000);
+let sccSyncRunning=false;
+setInterval(async()=>{
+ if(!cloudOnline||sccSyncRunning||document.hidden)return;
+ sccSyncRunning=true;
+ try{
+  if(cloudDirty.has(mode))await cloudSave(mode);else await cloudLoad(mode);
+  // Poll one background category per cycle to reduce API load.
+  const other=['group','individual','uno'].filter(x=>x!==mode);
+  const cat=other[Math.floor(Date.now()/12000)%other.length];
+  if(cloudDirty.has(cat))await cloudSave(cat);else await cloudLoad(cat);
+ }finally{sccSyncRunning=false}
+},12000);
 // Role-based UI (server also checks writes). All categories remain viewable.
 const baseRender=render;render=function(){baseRender();const isAdmin=cloudOnline&&cloudRole==='admin',canScore=cloudOnline&&(cloudRole==='admin'||cloudRole==='staff');for(const id of ['apply','draw','reset','import'])$('#'+id).disabled=!isAdmin;$('#teams').querySelectorAll('input,button').forEach(x=>x.disabled=!isAdmin);$('#rounds').querySelectorAll('[data-edit]').forEach(x=>x.disabled=!canScore);};
 // V9.4: authentication gateway. Never reveal tournament controls before successful API response.
 function gatewayMessage(msg){$('#gateError').textContent=msg}
 function gatewayEnter(){document.body.classList.add('scc-entered');$('#sccWho').textContent='👤 '+(cloudRole==='admin'?'Admin':cloudRole==='staff'?'Guru Pengadil':'Tetamu (Guest)');render()}
+let sccLoginToken=0;
 async function gatewayLogin(role,pin){
- const btn=$('#gateEnter'),guest=$('#gateGuest');btn.disabled=true;guest.disabled=true;
- gatewayMessage('Sedang menghubungi sistem…');cloudRole=role;cloudPin=pin;cloudUrl=SCC_API_URL;
+ const token=++sccLoginToken,btn=$('#gateEnter'),guest=$('#gateGuest');btn.disabled=true;guest.disabled=true;
+ gatewayMessage('Sedang menghubungi cloud…');cloudRole=role;cloudPin=pin;cloudUrl=SCC_API_URL;
  try{
-  const first=await cloudRequest({action:'load',category:'group'});
+  // Only one cloud read is required before allowing access.
+  const first=await cloudRequest({action:'load',category:mode});
+  if(token!==sccLoginToken)return;
   if(!first.ok)throw Error(first.error||'PIN tidak sah');
-  const loaded={group:first};
-  for(const cat of ['individual','uno']){loaded[cat]=await cloudRequest({action:'load',category:cat});if(!loaded[cat].ok)throw Error(loaded[cat].error||'Gagal memuatkan '+cat)}
-  for(const cat of ['group','individual','uno']){cloudRev[cat]=loaded[cat].revision;if(loaded[cat].data)state[cat]=loaded[cat].data}
+  cloudRev[mode]=first.revision;
+  if(first.data)state[mode]=first.data;
   localStorage.setItem(KEY,JSON.stringify(state));cloudOnline=true;cloudDirty.clear();
   sessionStorage.setItem('scc94role',role);sessionStorage.setItem('scc94pin',pin);
-  gatewayMessage('');gatewayEnter();cloudStatus('🟢 Disambung · '+role);
- }catch(e){cloudOnline=false;gatewayMessage('Tidak berjaya masuk: '+e.message)}
- finally{btn.disabled=false;guest.disabled=false}
+  gatewayMessage('');gatewayEnter();cloudStatus('🟢 Cloud aktif · '+role+' · kategori '+mode);
+  // Remaining categories load in the background, never delay login.
+  for(const cat of ['group','individual','uno'])if(cat!==mode){
+   cloudRequest({action:'load',category:cat}).then(r=>{
+    if(token!==sccLoginToken||!cloudOnline||!r.ok||cloudDirty.has(cat))return;
+    cloudRev[cat]=r.revision;if(r.data)state[cat]=r.data;
+    localStorage.setItem(KEY,JSON.stringify(state));if(mode===cat)render();
+   }).catch(()=>{});
+  }
+ }catch(e){if(token===sccLoginToken){cloudOnline=false;gatewayMessage('Tidak berjaya masuk: '+e.message)}}
+ finally{if(token===sccLoginToken){btn.disabled=false;guest.disabled=false}}
 }
 $('#gatePin').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,4)});
 $('#gatePin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#gateEnter').click()});
 $('#gateEnter').onclick=()=>{let pin=$('#gatePin').value;if(!/^\d{4}$/.test(pin))return gatewayMessage('Sila masukkan PIN 4 digit.');gatewayLogin($('#gateRole').value,pin)};
 $('#gateGuest').onclick=()=>gatewayLogin('viewer','');
-$('#sccLogout').onclick=()=>{sessionStorage.removeItem('scc94role');sessionStorage.removeItem('scc94pin');cloudOnline=false;cloudRole='viewer';cloudPin='';$('#gatePin').value='';document.body.classList.remove('scc-entered');gatewayMessage('')};
+$('#sccLogout').onclick=()=>{sccLoginToken++; sessionStorage.removeItem('scc94role');sessionStorage.removeItem('scc94pin');cloudOnline=false;cloudRole='viewer';cloudPin='';$('#gatePin').value='';document.body.classList.remove('scc-entered');gatewayMessage('')};
 const savedRole=sessionStorage.getItem('scc94role'),savedPin=sessionStorage.getItem('scc94pin');
 if(['admin','staff','viewer'].includes(savedRole)&& (savedRole==='viewer'||/^\d{4}$/.test(savedPin||''))){$('#gateRole').value=savedRole==='admin'?'admin':'staff';$('#gatePin').value=savedPin||'';gatewayLogin(savedRole,savedPin||'')}
 
