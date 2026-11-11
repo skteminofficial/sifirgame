@@ -45,6 +45,7 @@
 
 .bracket-zoom-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}.bracket-zoom-tools button{padding:9px 12px}.bracket-zoom-tools #zoomValue{min-width:55px;text-align:center;font-weight:850;color:#39289e}.bracket-zoom-hint{font-size:12px;color:#64718b;margin:7px 0}.rounds{touch-action:pan-x pan-y;max-height:70vh!important;min-height:300px!important}.bracket-board{transform-origin:top left}
 @media(max-width:650px){.bracket-zoom-tools{gap:5px}.bracket-zoom-tools button{font-size:12px;padding:8px}.rounds{max-height:65vh!important}}
+.bracket-stage{position:relative;overflow:visible}.rounds{touch-action:pan-x pan-y;cursor:grab}.rounds.is-dragging{cursor:grabbing;user-select:none}.bracket-board{will-change:transform}
 </style><style id="gatewayStyle">
 body:not(.scc-entered)>header,body:not(.scc-entered)>main,body:not(.scc-entered)>footer{display:none!important}
 #gateway{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 20% 10%,#413a9b,#111a44 65%,#09112c);overflow:auto}
@@ -56,7 +57,7 @@ body.scc-entered #gateway{display:none!important}
 <main class="wrap"><div id="sccSessionBar"><span id="sccWho"></span><button id="sccLogout" type="button">🚪 Keluar Sistem</button></div><nav class="tabs"><button class="tab active" data-mode="group">♟️ Dam Berkumpulan</button><button class="tab" data-mode="individual">👤 Dam Individu</button><button class="tab" data-mode="uno">🃏 Sifir UNO</button></nav>
 <section class="panel"><div class="toolbar" style="justify-content:space-between"><div><h2 id="heading"></h2><p class="note" id="desc"></p></div><div class="toolbar"><button class="secondary" id="export">⬇️ Sandaran JSON</button><button class="secondary" id="import">⬆️ Pulihkan</button><input type="file" id="importFile" accept=".json" hidden></div></div></section>
 <section class="panel cloud-panel"><h2>🏆 V9.3 — Akses Pertandingan</h2><div class="cloud-grid"><label>Peranan<select id="cloudRole"><option value="viewer">Penonton</option><option value="admin">Admin semua</option><option value="staff">Guru pengadil</option></select></label><label>PIN 4 digit<input id="cloudPin" type="password" inputmode="numeric" maxlength="4" placeholder="4 digit"></label><button class="primary" id="cloudConnect">🔓 Masuk</button><button class="secondary" id="cloudSync">🔄 Sync</button><button class="secondary" id="cloudPublish">☁️ Simpan tetapan</button></div><p class="cloud-status" id="cloudStatus">⚪ Belum disambung — data disimpan pada peranti sahaja.</p><p class="note">Admin mengurus cabutan dan pasukan. Guru pengadil hanya mengisi keputusan. Tiada pendaftaran akaun. Auto sync setiap 5 saat.</p></section><section class="stats" id="stats"></section><section class="panel"><div class="toolbar" style="justify-content:space-between"><h2 id="listTitle">👥 Senarai pasukan</h2><div class="toolbar"><label>Bilangan pasukan / peserta <input type="number" id="count" min="2" max="128" style="width:85px"></label><label id="playersCountLabel">Pemain setiap pasukan <input type="number" id="playersCount" min="1" max="30" style="width:78px" value="3"></label><button class="secondary" id="apply">Kemas kini bilangan</button></div></div><p class="note" id="editHint"></p><div class="teams" id="teams"></div><div class="actions"><button class="primary" id="draw">🎲 Cabutan rawak & bina carta</button><button class="secondary" id="showTeams">Sembunyi / papar senarai</button><button class="danger" id="reset">Kosongkan keputusan</button></div></section>
-<section class="panel"><div class="toolbar" style="justify-content:space-between"><h2>🏅 Carta Kalah Mati — Paparan Besar</h2><span class="note">Tatal ke kanan untuk pusingan seterusnya →</span></div><div id="champion" class="banner"></div><div class="bracket-zoom-tools" role="group" aria-label="Kawalan zum carta"><button type="button" id="zoomOut" class="secondary">− Kecil</button><span id="zoomValue" aria-live="polite">100%</span><button type="button" id="zoomIn" class="secondary">＋ Besar</button><button type="button" id="zoomFit" class="secondary">⛶ Muat semua</button><button type="button" id="zoomReset" class="secondary">↺ 100%</button></div><div class="rounds" id="rounds"></div><p class="bracket-zoom-hint">Cubit dua jari untuk zum pada tablet/telefon. Seret atau tatal untuk melihat bahagian carta.</p></section><section class="panel"><h2>📋 Peraturan & penentuan seri</h2><div id="rules" class="note"></div></section></main><footer>SIFIR CHALLENGE CHAMPIONSHIP V9.4.2 · Welcome Gateway</footer><div id="overlay"></div>
+<section class="panel"><div class="toolbar" style="justify-content:space-between"><h2>🏅 Carta Kalah Mati — Paparan Besar</h2><span class="note">Tatal ke kanan untuk pusingan seterusnya →</span></div><div id="champion" class="banner"></div><div class="bracket-zoom-tools" role="group" aria-label="Kawalan zum carta"><button type="button" id="zoomOut" class="secondary">− Kecil</button><span id="zoomValue" aria-live="polite">100%</span><button type="button" id="zoomIn" class="secondary">＋ Besar</button><button type="button" id="zoomFit" class="secondary">⛶ Muat semua</button><button type="button" id="zoomReset" class="secondary">↺ 100%</button></div><div class="rounds" id="rounds"></div><p class="bracket-zoom-hint">Zum dengan butang atau cubit dua jari. Zum kekal selepas carta dikemas kini. Seret ruang kosong pada komputer untuk bergerak.</p></section><section class="panel"><h2>📋 Peraturan & penentuan seri</h2><div id="rules" class="note"></div></section></main><footer>SIFIR CHALLENGE CHAMPIONSHIP V9.5.5 · Zoom Stabil</footer><div id="overlay"></div>
 <script>
 'use strict';
 const KEY='sifir-challenge-championship-v5-fixed', OLD='temin-sifir-championship-v1';
@@ -151,7 +152,7 @@ function showPodium(){const d=data(),f=d.rounds.at(-1)?.[0],t=d.thirdPlace;if(!f
  document.body.appendChild(el);for(let i=0;i<70;i++){let c=document.createElement('i');c.className='confetti';c.style.left=Math.random()*100+'%';c.style.background=['#ffd85a','#ff79ba','#80ecff','#fff'][i%4];c.style.setProperty('--dur',(3+Math.random()*4)+'s');c.style.setProperty('--delay',(-Math.random()*6)+'s');c.style.setProperty('--drift',((Math.random()-.5)*250)+'px');el.appendChild(c)}
  el.querySelector('#podiumClose').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});el.remove()};el.querySelector('#podiumFull').onclick=()=>el.requestFullscreen?.().catch(()=>{});
 }
-function render(){let d=data(),n=d.teams.length;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===mode));$('#heading').textContent=mode==='group'?'♟️ Dam Sifir Berkumpulan':mode==='individual'?'👤 Dam Sifir Individu':'🃏 Sifir UNO Berkumpulan';$('#desc').textContent=mode==='group'?'Bilangan pemain fleksibel · Setiap pertemuan best of 3 · Kemenangan individu menentukan pasukan mara':mode==='individual'?'1 lawan 1 · Dua set dahulu · Jika seri 1–1, set ketiga menentukan pemenang':'Jumlah stick pasukan · Satu perlawanan · Rebutan tambahan jika seri';$('#listTitle').textContent=mode==='individual'?'👤 Senarai peserta':'👥 Senarai pasukan & pemain';$('#editHint').textContent=mode==='individual'?'Edit nama peserta. Semua perubahan disimpan secara automatik.':'Edit nama pasukan dan pemain. Gunakan + Tambah pemain atau × untuk membuang pemain. Pastikan kedua-dua pasukan mempunyai bilangan pemain sama sebelum memasukkan keputusan.';$('#count').value=countDraft[mode]??n;$('#playersCountLabel').style.display=mode==='individual'?'none':'';$('#playersCount').value=playerCountDraft[mode]??(d.teams[0]?.players.length||3);let finished=d.rounds.flat().filter(m=>m.winner&&!m.bye).length,champ=d.started?d.rounds.at(-1)[0].winner:null;$('#stats').innerHTML=[['Pasukan / peserta',n],['Jumlah pemain',mode==='individual'?n:d.teams.reduce((a,t)=>a+t.players.length,0)],['Selesai',finished+' / '+(d.started?n-1:0)],['Juara',champ?'🏆 '+name(champ):'Belum ada']].map(([k,v])=>`<div class="stat"><b style="font-size:${k==='Juara'?16:24}px">${esc(v)}</b><span>${k}</span></div>`).join('');$('#teams').classList.toggle('hidden',!visible);$('#teams').innerHTML=d.teams.map((t,i)=>`<div class="team"><div class="teamhead"><span>${mode==='individual'?'👤':'🏷️'}</span><input aria-label="Nama ${i+1}" data-ti="${i}" data-name="team" value="${esc(t.name)}"></div>${mode==='individual'?'':`<div class="players">${t.players.map((p,j)=>`<div class="player"><small style="width:42px;font-weight:800">${esc(code(t,j))}</small><input placeholder="Nama pemain (pilihan)" aria-label="Pemain ${j+1}" data-ti="${i}" data-pi="${j}" value="${esc(/^Pemain \d+$/i.test(p)?'':p)}"><button data-remove="${i},${j}" title="Buang pemain">×</button></div>`).join('')}</div><button class="secondary add" data-add="${i}">＋ Tambah pemain</button>`}</div>`).join('');$('#champion').classList.toggle('is-champion',!!champ);$('#champion').innerHTML=champ?`<div class="champ-head">✨ SIFIR CHALLENGE CHAMPIONSHIP ✨</div><div class="champ-cup">🏆</div><div class="champ-head">TAHNIAH! JUARA KEJOHANAN</div><div class="champ-name">${esc(name(champ))}</div><button class="champ-button" id="showChampion" type="button">🎉 PAPARKAN JUARA DI SKRIN BESAR</button>`:'🎯 Isi keputusan perlawanan untuk melihat laluan ke final secara automatik.';$('#rounds').innerHTML=renderBracket(d);applyBracketZoom();renderThirdPlace(d);$('#rules').textContent=mode==='group'?'Setiap pemain bertemu pemain bernombor sama dari pasukan lawan (A1–B1, A2–B2 dan seterusnya). Setiap pasangan bermain dua set; jika 1–1, set ketiga dimainkan. Pasukan dengan kemenangan individu terbanyak mara. Jika kemenangan pasukan terikat (contohnya 2–2), pilih seorang wakil setiap pasukan untuk perlawanan penentuan best of 3. Bilangan pemain kedua-dua pasukan mesti sama. Jika tidak sama, selaraskan senarai sebelum bermain.':mode==='individual'?'Setiap peserta bermain 2 set dahulu. Jika seri 1–1, jalankan set ketiga. Peserta yang memenangi 2 set mara.':'Setiap rebutan kad sifir menghasilkan satu stick untuk pemain yang menjawab betul dahulu. Catat jumlah stick terkumpul bagi setiap pasukan. Jika seri, jalankan dua rebutan tambahan; jika masih seri, sambung satu rebutan pada satu masa sehingga ada pemenang.'}
+function render(){let d=data(),n=d.teams.length;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===mode));$('#heading').textContent=mode==='group'?'♟️ Dam Sifir Berkumpulan':mode==='individual'?'👤 Dam Sifir Individu':'🃏 Sifir UNO Berkumpulan';$('#desc').textContent=mode==='group'?'Bilangan pemain fleksibel · Setiap pertemuan best of 3 · Kemenangan individu menentukan pasukan mara':mode==='individual'?'1 lawan 1 · Dua set dahulu · Jika seri 1–1, set ketiga menentukan pemenang':'Jumlah stick pasukan · Satu perlawanan · Rebutan tambahan jika seri';$('#listTitle').textContent=mode==='individual'?'👤 Senarai peserta':'👥 Senarai pasukan & pemain';$('#editHint').textContent=mode==='individual'?'Edit nama peserta. Semua perubahan disimpan secara automatik.':'Edit nama pasukan dan pemain. Gunakan + Tambah pemain atau × untuk membuang pemain. Pastikan kedua-dua pasukan mempunyai bilangan pemain sama sebelum memasukkan keputusan.';$('#count').value=countDraft[mode]??n;$('#playersCountLabel').style.display=mode==='individual'?'none':'';$('#playersCount').value=playerCountDraft[mode]??(d.teams[0]?.players.length||3);let finished=d.rounds.flat().filter(m=>m.winner&&!m.bye).length,champ=d.started?d.rounds.at(-1)[0].winner:null;$('#stats').innerHTML=[['Pasukan / peserta',n],['Jumlah pemain',mode==='individual'?n:d.teams.reduce((a,t)=>a+t.players.length,0)],['Selesai',finished+' / '+(d.started?n-1:0)],['Juara',champ?'🏆 '+name(champ):'Belum ada']].map(([k,v])=>`<div class="stat"><b style="font-size:${k==='Juara'?16:24}px">${esc(v)}</b><span>${k}</span></div>`).join('');$('#teams').classList.toggle('hidden',!visible);$('#teams').innerHTML=d.teams.map((t,i)=>`<div class="team"><div class="teamhead"><span>${mode==='individual'?'👤':'🏷️'}</span><input aria-label="Nama ${i+1}" data-ti="${i}" data-name="team" value="${esc(t.name)}"></div>${mode==='individual'?'':`<div class="players">${t.players.map((p,j)=>`<div class="player"><small style="width:42px;font-weight:800">${esc(code(t,j))}</small><input placeholder="Nama pemain (pilihan)" aria-label="Pemain ${j+1}" data-ti="${i}" data-pi="${j}" value="${esc(/^Pemain \d+$/i.test(p)?'':p)}"><button data-remove="${i},${j}" title="Buang pemain">×</button></div>`).join('')}</div><button class="secondary add" data-add="${i}">＋ Tambah pemain</button>`}</div>`).join('');$('#champion').classList.toggle('is-champion',!!champ);$('#champion').innerHTML=champ?`<div class="champ-head">✨ SIFIR CHALLENGE CHAMPIONSHIP ✨</div><div class="champ-cup">🏆</div><div class="champ-head">TAHNIAH! JUARA KEJOHANAN</div><div class="champ-name">${esc(name(champ))}</div><button class="champ-button" id="showChampion" type="button">🎉 PAPARKAN JUARA DI SKRIN BESAR</button>`:'🎯 Isi keputusan perlawanan untuk melihat laluan ke final secara automatik.';const bracketScroll={x:$('#rounds').scrollLeft,y:$('#rounds').scrollTop};$('#rounds').innerHTML=renderBracket(d);applyBracketZoom();$('#rounds').scrollLeft=bracketScroll.x;$('#rounds').scrollTop=bracketScroll.y;renderThirdPlace(d);$('#rules').textContent=mode==='group'?'Setiap pemain bertemu pemain bernombor sama dari pasukan lawan (A1–B1, A2–B2 dan seterusnya). Setiap pasangan bermain dua set; jika 1–1, set ketiga dimainkan. Pasukan dengan kemenangan individu terbanyak mara. Jika kemenangan pasukan terikat (contohnya 2–2), pilih seorang wakil setiap pasukan untuk perlawanan penentuan best of 3. Bilangan pemain kedua-dua pasukan mesti sama. Jika tidak sama, selaraskan senarai sebelum bermain.':mode==='individual'?'Setiap peserta bermain 2 set dahulu. Jika seri 1–1, jalankan set ketiga. Peserta yang memenangi 2 set mara.':'Setiap rebutan kad sifir menghasilkan satu stick untuk pemain yang menjawab betul dahulu. Catat jumlah stick terkumpul bagi setiap pasukan. Jika seri, jalankan dua rebutan tambahan; jika masih seri, sambung satu rebutan pada satu masa sehingga ada pemenang.'}
 function close(){$('#overlay').innerHTML=''}
 function showChampion(){
  const d=data(),champ=d.started&&d.rounds.length?d.rounds.at(-1)[0].winner:null;if(!champ)return;
@@ -367,31 +368,62 @@ function showDrawWheel(cat){let d=state[cat],first=d.rounds[0],byes=first.filter
 }
 
 
-// V9.5.3: Carta boleh zum; tiada perubahan pada data pertandingan atau cloud.
-var bracketZoom=1;
+// V9.5.5: Stable bracket zoom. Fixed canvas, transform, persistent viewport.
+const BRACKET_ZOOM_KEY='scc-bracket-zoom-v955';
+let bracketZoom=Number(localStorage.getItem(BRACKET_ZOOM_KEY))||1;
+let bracketZoomMode='manual';
 function applyBracketZoom(){
- const board=document.querySelector('#rounds .bracket-board');
- if(board)board.style.zoom=String(bracketZoom);
- const value=document.getElementById('zoomValue');if(value)value.textContent=Math.round(bracketZoom*100)+'%';
+ const viewport=document.getElementById('rounds');
+ const board=viewport?.querySelector('.bracket-board');
+ if(board){
+  const w=parseFloat(board.style.width),h=parseFloat(board.style.height);
+  let stage=viewport.querySelector('.bracket-stage');
+  if(!stage){stage=document.createElement('div');stage.className='bracket-stage';board.parentNode.insertBefore(stage,board);stage.appendChild(board)}
+  stage.style.width=(w*bracketZoom)+'px';stage.style.height=(h*bracketZoom)+'px';
+  board.style.zoom='';board.style.transform='scale('+bracketZoom+')';board.style.transformOrigin='0 0';
+ }
+ document.getElementById('zoomValue').textContent=Math.round(bracketZoom*100)+'%';
 }
-function setBracketZoom(value){bracketZoom=Math.max(.15,Math.min(2,Math.round(value*100)/100));applyBracketZoom()}
+function setBracketZoom(value,point){
+ const viewport=document.getElementById('rounds'),old=bracketZoom;
+ bracketZoom=Math.max(.15,Math.min(2.5,Math.round(value*100)/100));
+ bracketZoomMode='manual';localStorage.setItem(BRACKET_ZOOM_KEY,String(bracketZoom));
+ const px=point?.x??viewport.clientWidth/2,py=point?.y??viewport.clientHeight/2;
+ const contentX=(viewport.scrollLeft+px)/old,contentY=(viewport.scrollTop+py)/old;
+ applyBracketZoom();viewport.scrollLeft=contentX*bracketZoom-px;viewport.scrollTop=contentY*bracketZoom-py;
+}
 function fitBracketZoom(){
- const viewport=document.getElementById('rounds'),board=viewport?.querySelector('.bracket-board');if(!board)return;
+ const viewport=document.getElementById('rounds'),board=viewport.querySelector('.bracket-board');if(!board)return;
  const w=parseFloat(board.style.width),h=parseFloat(board.style.height);
- setBracketZoom(Math.min(1,(viewport.clientWidth-12)/w,(viewport.clientHeight-12)/h));
- viewport.scrollTop=0;viewport.scrollLeft=0;
+ bracketZoom=Math.max(.15,Math.min(2.5,Math.floor(Math.min((viewport.clientWidth-16)/w,(viewport.clientHeight-16)/h)*100)/100));
+ bracketZoomMode='fit';localStorage.setItem(BRACKET_ZOOM_KEY,String(bracketZoom));
+ applyBracketZoom();viewport.scrollLeft=0;viewport.scrollTop=0;
 }
 document.getElementById('zoomIn').addEventListener('click',()=>setBracketZoom(bracketZoom+.15));
 document.getElementById('zoomOut').addEventListener('click',()=>setBracketZoom(bracketZoom-.15));
 document.getElementById('zoomReset').addEventListener('click',()=>setBracketZoom(1));
 document.getElementById('zoomFit').addEventListener('click',fitBracketZoom);
 (function(){
- const viewport=document.getElementById('rounds');let initialDistance=0,initialZoom=1;
+ const viewport=document.getElementById('rounds');
+ let pinch=null,drag=null;
  const distance=e=>Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
- viewport.addEventListener('touchstart',e=>{if(e.touches.length===2){initialDistance=distance(e);initialZoom=bracketZoom}},{passive:true});
- viewport.addEventListener('touchmove',e=>{if(e.touches.length===2&&initialDistance>0){e.preventDefault();setBracketZoom(initialZoom*distance(e)/initialDistance)}},{passive:false});
- viewport.addEventListener('touchend',e=>{if(e.touches.length<2)initialDistance=0},{passive:true});
- viewport.addEventListener('wheel',e=>{if(e.ctrlKey){e.preventDefault();setBracketZoom(bracketZoom+(e.deltaY<0?.1:-.1))}},{passive:false});
+ viewport.addEventListener('touchstart',e=>{
+  if(e.touches.length===2){const rect=viewport.getBoundingClientRect();pinch={distance:distance(e),zoom:bracketZoom,x:(e.touches[0].clientX+e.touches[1].clientX)/2-rect.left,y:(e.touches[0].clientY+e.touches[1].clientY)/2-rect.top};drag=null}
+ },{passive:true});
+ viewport.addEventListener('touchmove',e=>{
+  if(e.touches.length===2&&pinch){e.preventDefault();setBracketZoom(pinch.zoom*distance(e)/pinch.distance,{x:pinch.x,y:pinch.y})}
+ },{passive:false});
+ viewport.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null},{passive:true});
+ viewport.addEventListener('wheel',e=>{
+  if(e.ctrlKey||e.metaKey){e.preventDefault();const r=viewport.getBoundingClientRect();setBracketZoom(bracketZoom*(e.deltaY<0?1.1:1/1.1),{x:e.clientX-r.left,y:e.clientY-r.top})}
+ },{passive:false});
+ viewport.addEventListener('pointerdown',e=>{
+  if(e.button!==0||e.pointerType==='touch'||e.target.closest('button,input,select,a'))return;
+  drag={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};viewport.setPointerCapture(e.pointerId);viewport.classList.add('is-dragging');
+ });
+ viewport.addEventListener('pointermove',e=>{if(!drag)return;viewport.scrollLeft=drag.left-(e.clientX-drag.x);viewport.scrollTop=drag.top-(e.clientY-drag.y)});
+ const stop=()=>{drag=null;viewport.classList.remove('is-dragging')};
+ viewport.addEventListener('pointerup',stop);viewport.addEventListener('pointercancel',stop);
 })();
 
 </script></body></html>
